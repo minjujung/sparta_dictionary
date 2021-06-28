@@ -1,3 +1,4 @@
+import React from "react";
 import styled from "styled-components";
 
 import { withRouter } from "react-router";
@@ -36,7 +37,7 @@ function App(props) {
         <Switch>
           <Route exact path="/" component={Main} />
           <Route path="/create" component={Create} />
-          <Route path="/edit" component={Edit} />
+          <Route path="/edit/:index" component={Edit} />
           <Route component={NotFound} />
         </Switch>
       </Container>

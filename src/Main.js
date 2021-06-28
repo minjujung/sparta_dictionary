@@ -28,7 +28,11 @@ const Main = (props) => {
               <p>예시</p>
               <ExData>{l.ex}</ExData>
               <ButtonGroup>
-                <CreateIcon onClick={() => {}} />
+                <CreateIcon
+                  onClick={() => {
+                    props.history.push("/edit/" + idx);
+                  }}
+                />
                 <DeleteIcon
                   onClick={() => {
                     dispatch(deleteWordListFB(idx));
@@ -86,7 +90,7 @@ const WordContainer = styled.div`
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 20px;
-  /* text-align: left; */
+  position: relative;
   & > dd {
     margin: 0;
   }
@@ -111,8 +115,11 @@ const ExData = styled.dd`
 `;
 
 const ButtonGroup = styled.div`
+  position: absolute;
   color: orange;
-  margin: 10px 0 0 70%;
+  margin-top: 10px;
+  top: 5px;
+  right: 5px;
   & > svg {
     font-size: 30px;
     margin-right: 10px;
@@ -121,14 +128,13 @@ const ButtonGroup = styled.div`
 
 const addBtnStyle = {
   position: "absolute",
-  bottom: "60px",
-  right: "10%",
-  width: "70px",
-  height: "70px",
+  bottom: "20px",
+  right: "20px",
+  fontSize: "50px",
   border: "none",
   color: "orange",
-  webkitFilter: "drop-shadow(2px 0px 1px rgba(50, 50, 93, 0.25))",
-  mozFilter: "drop-shadow(2px 0px 1px rgba(50, 50, 93, 0.25))",
+  WebkitFilter: "drop-shadow(2px 0px 1px rgba(50, 50, 93, 0.25))",
+  MozFilter: "drop-shadow(2px 0px 1px rgba(50, 50, 93, 0.25))",
   filter: "drop-shadow(2px 0px 1px rgba(50, 50, 93, 0.25))",
 };
 
