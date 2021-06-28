@@ -1,20 +1,16 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
 
+import { useDispatch } from "react-redux";
+import { addWordListFB } from "./redux/modules/dictionary";
+
 const Create = (props) => {
   const wordInput = useRef();
   const meanInput = useRef();
   const exInput = useRef();
 
-  const addWord = props.addWord;
+  const dispatch = useDispatch();
 
-  const addNewWord = () => {
-    addWord({
-      word: wordInput.current.value,
-      mean: meanInput.current.value,
-      ex: exInput.current.value,
-    });
-  };
   return (
     <>
       <InputContainer>
@@ -40,7 +36,13 @@ const Create = (props) => {
       </InputContainer>
       <button
         onClick={() => {
-          addNewWord();
+          dispatch(
+            addWordListFB({
+              word: wordInput.current.value,
+              mean: meanInput.current.value,
+              ex: exInput.current.value,
+            })
+          );
           props.history.push("/");
         }}
       >

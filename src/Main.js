@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 
+import { useSelector } from "react-redux";
+
 const Main = (props) => {
-  const list = props.list;
+  const list = useSelector((state) => state.dictionary.list);
   return (
     <>
       <header>
