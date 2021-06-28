@@ -74,10 +74,8 @@ const CreateContainer = styled.div`
 `;
 
 const Header = styled.header`
-  position: fixed;
-  top: 40px;
+  top: 10px;
   background-color: white;
-  width: 350px;
   text-align: center;
   display: flex;
   justify-content: center;
@@ -92,33 +90,37 @@ const beforeBtn = {
   fontSize: "30px",
   marginRight: "30px",
   position: "absolute",
-  top: "0",
-  left: "10px",
+  top: "2px",
+  left: "0",
 };
 
 const InputContainer = styled.div`
-  margin-top: 70px;
+  width: 100%;
+  margin-top: 30px;
   display: flex;
   flex-direction: column;
   align-items: center;
   & > div {
-    width: 300px;
     padding: 10px;
-    border: 1px solid black;
+    border: 2px solid orange;
+    background-color: #ffe8c257;
     margin-bottom: 20px;
-    height: 10vh;
+    width: 90%;
+    min-height: 80px;
     border-radius: 8px;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px,
+      rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;
     & > label {
       border-bottom: 1px solid black;
       font-size: 15px;
       font-weight: 600;
       & > input {
         width: 90%;
-        margin-top: 10px;
+        margin-top: 15px;
         padding: 10px;
         font-size: 15px;
         border-radius: 8px;
-        border: 0.5px solid black;
+        border: 0.5px solid grey;
         :focus {
           outline: none;
           border: 1px solid orange;
@@ -129,7 +131,8 @@ const InputContainer = styled.div`
 `;
 
 const AddButton = styled.button`
-  margin-top: 45%;
+  position: absolute;
+  bottom: 20px;
   padding: 15px 100px;
   border-radius: 20px;
   border: none;
