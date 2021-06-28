@@ -10,6 +10,7 @@ import Create from "./Create";
 import Main from "./Main";
 import NotFound from "./NotFound";
 import { useEffect } from "react";
+import Edit from "./Edit";
 
 const mapStateTopProps = (state) => ({
   word_list: state.dictionary.list,
@@ -35,6 +36,7 @@ function App(props) {
         <Switch>
           <Route exact path="/" component={Main} />
           <Route path="/create" component={Create} />
+          <Route path="/edit" component={Edit} />
           <Route component={NotFound} />
         </Switch>
       </Container>

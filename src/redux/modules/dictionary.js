@@ -5,6 +5,8 @@ const word_db = firestore.collection("word_list");
 //Action
 const LOAD = "dict/LOAD";
 const ADD = "dict/ADD";
+const UPDATE = "dict/UPDATE";
+const DELETE = "dict/DELETE";
 
 //IntialState
 const initialState = {
@@ -36,6 +38,14 @@ export const addWordList = (word) => {
   return { type: ADD, word };
 };
 
+export const updateWordList = (index, word) => {
+  return { type: UPDATE, index, word };
+};
+
+export const deleteWordList = (index) => {
+  return { type: DELETE, index };
+};
+
 //firebase랑 통신하는 함수
 export const loadWordListFB = () => {
   return function (dispatch) {
@@ -62,6 +72,52 @@ export const addWordListFB = (word) => {
   };
 };
 
+export const updateWordListFB = (index, wordSet) => {
+  return function (dispatch, getState) {
+    const old_data = getState().dictionary.list[index];
+
+    let new_data = {
+      ...old_data,
+      word: wordSet.word,
+      mean: wordSet.mean,
+      ex: wordSet.ex,
+    };
+
+    if (!new_data.id) {
+      return;
+    }
+    word_db
+      .doc(new_data.id)
+      .update(new_data)
+      .then((docRef) => {
+        dispatch(updateWordList(index, wordSet));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+};
+
+export const deleteWordListFB = (index) => {
+  return function (dispatch, getState) {
+    const old_data = getState().dictionary.list[index];
+
+    if (!old_data.id) {
+      return;
+    }
+
+    word_db
+      .doc(old_data.id)
+      .delete()
+      .then((docRef) => {
+        dispatch(deleteWordList(index));
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+};
+
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case "dict/LOAD": {
@@ -72,6 +128,27 @@ export default function reducer(state = initialState, action = {}) {
     }
     case "dict/ADD": {
       const new_word_list = [...state.list, action.word];
+      return { list: new_word_list };
+    }
+
+    case "dict/UPDATE": {
+      const new_word_list = state.list.map((l, idx) => {
+        if (idx === action.index) {
+          return {
+            ...l,
+            word: action.word.word,
+            mean: action.word.mean,
+            ex: action.word.ex,
+          };
+        } else {
+          return l;
+        }
+      });
+      return { list: new_word_list };
+    }
+
+    case "dict/DELETE": {
+      const new_word_list = state.list.filter((l, idx) => idx !== action.index);
       return { list: new_word_list };
     }
 
