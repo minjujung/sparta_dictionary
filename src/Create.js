@@ -12,14 +12,17 @@ const Create = (props) => {
   const dispatch = useDispatch();
 
   return (
-    <>
-      <InputContainer>
+    <CreateContainer>
+      <Header>
+        <h1>단어추가하기</h1>
+      </Header>
+      <InputContainerFirst>
         <label>
           단어
           <br />
           <input type="text" id="word" ref={wordInput} />
         </label>
-      </InputContainer>
+      </InputContainerFirst>
       <InputContainer>
         <label>
           설명
@@ -48,9 +51,36 @@ const Create = (props) => {
       >
         추가하기
       </button>
-    </>
+    </CreateContainer>
   );
 };
+
+const CreateContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 90vh;
+  width: 100%;
+`;
+
+const Header = styled.header`
+  position: fixed;
+  top: 40px;
+  background-color: white;
+  width: 350px;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  & > h1 {
+    margin: 0;
+  }
+`;
+
+const InputContainerFirst = styled.div`
+  padding: 20px;
+  border: 1px solid black;
+  margin: 70px 0 20px 0;
+`;
 
 const InputContainer = styled.div`
   padding: 20px;
