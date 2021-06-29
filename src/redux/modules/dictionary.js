@@ -78,7 +78,7 @@ export const loadMoreFB = (last) => {
     word_db
       .orderBy("word", "asc")
       .startAfter(last)
-      .limit(6)
+      .limit(4)
       .get()
       .then((docs) => {
         let word_list_data = getState().dictionary.list;

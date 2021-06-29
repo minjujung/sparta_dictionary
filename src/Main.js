@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useLayoutEffect, useEffect, useRef } from "react";
 import styled from "styled-components";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -12,6 +12,27 @@ const Main = (props) => {
   const dispatch = useDispatch();
   const list = useSelector((state) => state.dictionary.list);
 
+  const infscroll = useRef();
+
+  const handleScroll = () => {
+    if (
+      infscroll.current.scrollTop + infscroll.current.clientHeight + 0.6 >=
+      infscroll.current.scrollHeight
+    ) {
+      dispatch(loadMoreFB(list[list.length - 1].word));
+    }
+  };
+  useLayoutEffect(() => {
+    infscroll.current.addEventListener("scroll", handleScroll);
+    if (infscroll.current) {
+      return () => {
+        infscroll.current.removeEventListener("scroll", handleScroll);
+      };
+    } else {
+      return;
+    }
+  }, [handleScroll]);
+
   return (
     <MainContainter>
       <Header>
@@ -21,7 +42,7 @@ const Main = (props) => {
         </div>
         <h2>-나만의 사전-</h2>
       </Header>
-      <ListContainer>
+      <ListContainer ref={infscroll}>
         {list.map((l, idx) => {
           return (
             <WordContainer key={idx}>
@@ -55,13 +76,6 @@ const Main = (props) => {
           props.history.push("/create");
         }}
       />
-      <button
-        onClick={() => {
-          dispatch(loadMoreFB(list[list.length - 1].word));
-        }}
-      >
-        load more
-      </button>
     </MainContainter>
   );
 };
@@ -110,7 +124,7 @@ const ListContainer = styled.dl`
   flex-direction: column;
   align-items: center;
   margin-top: 90px;
-  overflow-y: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
   &::-webkit-scrollbar {
     width: 5px;
