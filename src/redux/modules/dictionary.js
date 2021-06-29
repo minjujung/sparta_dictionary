@@ -4,6 +4,7 @@ const word_db = firestore.collection("word_list");
 
 //Action
 const LOAD = "dict/LOAD";
+const LOADMORE = "dict/LOADMORE";
 const ADD = "dict/ADD";
 const UPDATE = "dict/UPDATE";
 const DELETE = "dict/DELETE";
@@ -34,6 +35,10 @@ export const loadWordList = (list) => {
   return { type: LOAD, list };
 };
 
+export const loadMore = (list) => {
+  return { type: LOADMORE, list };
+};
+
 export const addWordList = (word) => {
   return { type: ADD, word };
 };
@@ -47,17 +52,44 @@ export const deleteWordList = (index) => {
 };
 
 //firebase랑 통신하는 함수
+
 export const loadWordListFB = () => {
   return function (dispatch) {
-    word_db.get().then((docs) => {
-      let word_list_data = [];
-      docs.forEach((doc) => {
-        if (doc.exists) {
-          word_list_data = [...word_list_data, { id: doc.id, ...doc.data() }];
-        }
+    word_db
+      .orderBy("word")
+      .limit(6)
+      .get()
+      .then((docs) => {
+        let word_list_data = [];
+        docs.forEach((doc) => {
+          if (doc.exists) {
+            word_list_data = [...word_list_data, { id: doc.id, ...doc.data() }];
+            console.log(word_list_data);
+          }
+        });
+        dispatch(loadWordList(word_list_data));
       });
-      dispatch(loadWordList(word_list_data));
-    });
+  };
+};
+
+export const loadMoreFB = (last) => {
+  return function (dispatch, getState) {
+    console.log(last);
+    word_db
+      .orderBy("word", "asc")
+      .startAfter(last)
+      .limit(6)
+      .get()
+      .then((docs) => {
+        let word_list_data = getState().dictionary.list;
+        console.log(docs);
+        docs.forEach((doc) => {
+          if (doc.exists) {
+            word_list_data = [...word_list_data, { id: doc.id, ...doc.data() }];
+          }
+        });
+        dispatch(loadMore(word_list_data));
+      });
   };
 };
 
@@ -126,6 +158,14 @@ export default function reducer(state = initialState, action = {}) {
       }
       return state;
     }
+
+    case "dict/LOADMORE": {
+      if (action.list.length > 0) {
+        return { list: action.list };
+      }
+      return state;
+    }
+
     case "dict/ADD": {
       const new_word_list = [...state.list, action.word];
       return { list: new_word_list };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -6,11 +6,12 @@ import CreateIcon from "@material-ui/icons/Create";
 import MenuBookIcon from "@material-ui/icons/MenuBook";
 
 import { useSelector, useDispatch } from "react-redux";
-import { deleteWordListFB } from "./redux/modules/dictionary";
+import { deleteWordListFB, loadMoreFB } from "./redux/modules/dictionary";
 
 const Main = (props) => {
   const dispatch = useDispatch();
   const list = useSelector((state) => state.dictionary.list);
+
   return (
     <MainContainter>
       <Header>
@@ -54,6 +55,13 @@ const Main = (props) => {
           props.history.push("/create");
         }}
       />
+      <button
+        onClick={() => {
+          dispatch(loadMoreFB(list[list.length - 1].word));
+        }}
+      >
+        load more
+      </button>
     </MainContainter>
   );
 };
