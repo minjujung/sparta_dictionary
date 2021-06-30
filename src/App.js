@@ -6,15 +6,17 @@ import { Route, Switch } from "react-router-dom";
 
 import { connect } from "react-redux";
 import { loadWordListFB, addWordListFB } from "./redux/modules/dictionary";
+import { useEffect } from "react";
 
 import Create from "./Create";
 import Main from "./Main";
 import NotFound from "./NotFound";
-import { useEffect } from "react";
 import Edit from "./Edit";
+import Loader from "./Loader";
 
 const mapStateTopProps = (state) => ({
   word_list: state.dictionary.list,
+  is_loaded: state.dictionary.is_loaded,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -33,14 +35,18 @@ function App(props) {
 
   return (
     <div className="App">
-      <Container>
-        <Switch>
-          <Route exact path="/" component={Main} />
-          <Route path="/create" component={Create} />
-          <Route path="/edit/:index" component={Edit} />
-          <Route component={NotFound} />
-        </Switch>
-      </Container>
+      {!props.is_loaded ? (
+        <Loader />
+      ) : (
+        <Container>
+          <Switch>
+            <Route exact path="/" component={Main} />
+            <Route path="/create" component={Create} />
+            <Route path="/edit/:index" component={Edit} />
+            <Route component={NotFound} />
+          </Switch>
+        </Container>
+      )}
     </div>
   );
 }

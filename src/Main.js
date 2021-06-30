@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useEffect, useRef } from "react";
+import React, { useLayoutEffect, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -12,26 +12,62 @@ const Main = (props) => {
   const dispatch = useDispatch();
   const list = useSelector((state) => state.dictionary.list);
 
-  const infscroll = useRef();
+  const [target, setTarget] = useState(null);
 
-  const handleScroll = () => {
-    if (
-      infscroll.current.scrollTop + infscroll.current.clientHeight + 0.6 >=
-      infscroll.current.scrollHeight
-    ) {
-      dispatch(loadMoreFB(list[list.length - 1].word));
-    }
-  };
-  useLayoutEffect(() => {
-    infscroll.current.addEventListener("scroll", handleScroll);
-    if (infscroll.current) {
+  // const infscroll = useRef();
+
+  // const handleScroll = () => {
+  //   if (
+  //     infscroll.current.scrollTop + infscroll.current.clientHeight >=
+  //     infscroll.current.scrollHeight
+  //   ) {
+  //     dispatch(loadMoreFB(list[list.length - 1].word));
+  //   }
+  // };
+  // useLayoutEffect(() => {
+  //   infscroll.current.addEventListener("scroll", handleScroll);
+  //   if (infscroll.current) {
+  //     return () => {
+  //       infscroll.current.removeEventListener("scroll", handleScroll);
+  //     };
+  //   } else {
+  //     return;
+  //   }
+  // }, [handleScroll]);
+  const useInfiniteScroll = ({
+    root = null,
+    target,
+    onIntersect,
+    threshold = 1,
+    rootMargin = "0px",
+  }) => {
+    useEffect(() => {
+      const observer = new IntersectionObserver(onIntersect, {
+        root,
+        rootMargin,
+        threshold,
+      });
+
+      if (!target) {
+        return;
+      }
+      observer.observe(target);
+
       return () => {
-        infscroll.current.removeEventListener("scroll", handleScroll);
+        observer.unobserve(target);
       };
-    } else {
-      return;
-    }
-  }, [handleScroll]);
+    }, [target, root, rootMargin, onIntersect, threshold]);
+  };
+
+  useInfiniteScroll({
+    target,
+    onIntersect: ([{ isIntersecting }]) => {
+      if (isIntersecting) {
+        dispatch(loadMoreFB(list[list.length - 1].created));
+        console.log(list[list.length - 1].word);
+      }
+    },
+  });
 
   return (
     <MainContainter>
@@ -42,10 +78,10 @@ const Main = (props) => {
         </div>
         <h2>-나만의 사전-</h2>
       </Header>
-      <ListContainer ref={infscroll}>
+      <ListContainer>
         {list.map((l, idx) => {
           return (
-            <WordContainer key={idx}>
+            <WordContainer key={idx} ref={setTarget}>
               <dt>
                 <p>단어</p>
                 <dfn>{l.word}</dfn>

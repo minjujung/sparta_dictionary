@@ -28,6 +28,7 @@ const initialState = {
       ex: "저 친구가 초콜릿을 줬어. ㅎ1ㅎ1.",
     },
   ],
+  is_loaded: false,
 };
 
 // Action Creators
@@ -56,7 +57,7 @@ export const deleteWordList = (index) => {
 export const loadWordListFB = () => {
   return function (dispatch) {
     word_db
-      .orderBy("word")
+      .orderBy("created", "desc")
       .limit(6)
       .get()
       .then((docs) => {
@@ -73,16 +74,17 @@ export const loadWordListFB = () => {
 };
 
 export const loadMoreFB = (last) => {
+  if (!last) {
+    return;
+  }
   return function (dispatch, getState) {
-    console.log(last);
     word_db
-      .orderBy("word", "asc")
+      .orderBy("created", "desc")
       .startAfter(last)
       .limit(4)
       .get()
       .then((docs) => {
         let word_list_data = getState().dictionary.list;
-        console.log(docs);
         docs.forEach((doc) => {
           if (doc.exists) {
             word_list_data = [...word_list_data, { id: doc.id, ...doc.data() }];
@@ -154,21 +156,21 @@ export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
     case "dict/LOAD": {
       if (action.list.length > 0) {
-        return { list: action.list };
+        return { list: action.list, is_loaded: true };
       }
       return state;
     }
 
     case "dict/LOADMORE": {
       if (action.list.length > 0) {
-        return { list: action.list };
+        return { list: action.list, is_loaded: true };
       }
       return state;
     }
 
     case "dict/ADD": {
-      const new_word_list = [...state.list, action.word];
-      return { list: new_word_list };
+      const new_word_list = [action.word, ...state.list];
+      return { list: new_word_list, is_loaded: true };
     }
 
     case "dict/UPDATE": {
@@ -184,12 +186,12 @@ export default function reducer(state = initialState, action = {}) {
           return l;
         }
       });
-      return { list: new_word_list };
+      return { list: new_word_list, is_loaded: true };
     }
 
     case "dict/DELETE": {
       const new_word_list = state.list.filter((l, idx) => idx !== action.index);
-      return { list: new_word_list };
+      return { list: new_word_list, is_loaded: true };
     }
 
     default:

@@ -1,6 +1,7 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
+import firebase from "firebase";
 
 import { useDispatch } from "react-redux";
 import { addWordListFB } from "./redux/modules/dictionary";
@@ -50,6 +51,7 @@ const Create = (props) => {
         onClick={() => {
           dispatch(
             addWordListFB({
+              created: new Date(),
               word: wordInput.current.value,
               mean: meanInput.current.value,
               ex: exInput.current.value,
