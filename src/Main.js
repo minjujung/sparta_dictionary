@@ -64,7 +64,6 @@ const Main = (props) => {
     onIntersect: ([{ isIntersecting }]) => {
       if (isIntersecting) {
         dispatch(loadMoreFB(list[list.length - 1].created));
-        console.log(list[list.length - 1].word);
       }
     },
   });

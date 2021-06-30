@@ -65,7 +65,6 @@ export const loadWordListFB = () => {
         docs.forEach((doc) => {
           if (doc.exists) {
             word_list_data = [...word_list_data, { id: doc.id, ...doc.data() }];
-            console.log(word_list_data);
           }
         });
         dispatch(loadWordList(word_list_data));
